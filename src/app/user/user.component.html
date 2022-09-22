@@ -1,0 +1,16 @@
+<ion-item class="user-item">
+  <ion-avatar slot="start">
+    <img [src]="user.avatarUrl"  alt="User avatar"/>
+  </ion-avatar>
+  <ion-label>
+    <h2>{{ user.login }}</h2>
+  </ion-label>
+  <ion-button
+    slot="end"
+    shape="round"
+    fill="outline"
+    size="default"
+    color="primary">
+    Go to profile
+  </ion-button>
+</ion-item>

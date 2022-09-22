@@ -1,0 +1,11 @@
+:host {
+  display: block;
+}
+
+ion-item.user-item {
+  --border-radius: 12px;
+  --border-style: solid;
+  --border-width: 1px;
+  --border-color: #79747E;
+  --min-height: 70px;
+}
