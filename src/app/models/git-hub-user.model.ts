@@ -1,0 +1,35 @@
+export interface GitHubUser {
+  login: string;
+  id: number;
+  nodeId: string;
+  avatarUrl: string;
+  gravatarId: string;
+  url: string;
+  htmlUrl: string;
+  followersUrl: string;
+  followingUrl: string;
+  gistsUrl: string;
+  starredUrl: string;
+  subscriptionsUrl: string;
+  organizationsUrl: string;
+  reposUrl: string;
+  eventsUrl: string;
+  receivedEventsUrl: string;
+  type: 'User' | 'Organization';
+  siteAdmin: boolean;
+  name: string;
+  score: number;
+  company: string | null;
+  blog: string;
+  location: string;
+  email: string | null;
+  hireable: boolean;
+  bio: string;
+  twitterUsername: string;
+  publicRepos: number;
+  publicGists: number;
+  followers: number;
+  following: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
