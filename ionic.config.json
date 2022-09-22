@@ -1,0 +1,7 @@
+{
+  "name": "gh-ng-client",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
