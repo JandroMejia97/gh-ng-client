@@ -1,25 +1,90 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
     <ion-title>
-      Inbox
+      Welcome!
     </ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+  <ion-refresher slot="fixed">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">
-        Inbox
+        Welcome!
       </ion-title>
     </ion-toolbar>
+    <ion-toolbar>
+      <ion-searchbar
+        type="text"
+        debounce="400"
+        [value]="search"
+        enterkeyhint="search"
+        show-clear-button="always"
+        clearIcon="close-circle-outline"
+        placeholder="Search user’s username here..."
+        (ionChange)="onSearchChange($any($event))">
+      </ion-searchbar>
+    </ion-toolbar>
   </ion-header>
-  
-  <ion-list>
-    <app-message *ngFor="let message of getMessages()" [message]="message"></app-message>
+
+  <ion-list lines="none">
+    <ion-list-header>
+      <ion-label>
+        List of users
+      </ion-label>
+    </ion-list-header>
+    <ion-item class="chips-item">
+      <div class="chips">
+        <ion-chip [outline]="true">
+          <div class="chip-left">
+            <ion-icon color="primary" name="filter-outline"></ion-icon>
+            <ion-label>
+              Sort by...
+            </ion-label>
+          </div>
+          <ion-icon color="dark" name="chevron-down-outline"></ion-icon>
+        </ion-chip>
+        <ion-chip [outline]="true">
+          <div class="chip-left">
+            <ion-icon color="primary" [name]="orderBy === 'desc' ? 'trending-down-outline': 'trending-up-outline'"></ion-icon>
+            <ion-label>
+              Order by...
+            </ion-label>
+          </div>
+          <ion-icon color="dark" name="chevron-down-outline"></ion-icon>
+        </ion-chip>
+      </div>
+    </ion-item>
+    <ng-container *ngIf="searchResult !== null; else empty;">
+      <ion-item
+        class="user-item"
+        *ngFor="let user of searchResult.items">
+        <ion-avatar slot="start">
+          <img [src]="user.avatarUrl"  alt="User avatar"/>
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ user.login }}</h2>
+        </ion-label>
+        <ion-button
+          slot="end"
+          shape="round"
+          fill="outline"
+          size="default"
+          color="primary">
+          Go to profile
+        </ion-button>
+      </ion-item>
+    </ng-container>
   </ion-list>
+
+  <ng-template #empty>
+    <div class="empty">
+      <img src="/assets/images/search.image.png" alt="Image to show when there are no results"/>
+      <p>
+        Write something to search in GitHub!
+      </p>
+    </div>
+  </ng-template>
 </ion-content>
