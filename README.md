@@ -1,6 +1,8 @@
 # GitHub Client
 This is a simple GitHub client that allows you to search for users and view their profiles.
 
+You can found the design in [this link](https://www.figma.com/file/hTm9jCQzS0YOlcvbEGj16f/gh-client?node-id=0%3A1).
+
 ## Content
 - [Getting Started](#getting-started)
 - [Running with Docker](#running-with-docker)
