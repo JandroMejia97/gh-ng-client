@@ -3,10 +3,17 @@
   --ion-safe-area-bottom: 22px;
 }
 
+ion-header.header-collapse-condense {
+
+  ion-toolbar:first-of-type {
+    padding-top: 24px;
+  }
+}
+
 ion-toolbar {
 
   &:not(:first-of-type) {
-    margin-top: 18px;
+    padding-top: 18px;
   }
 
   ion-searchbar {
@@ -42,13 +49,40 @@ ion-toolbar {
   }
 }
 
+cdk-virtual-scroll-viewport {
+  height: 100%;
+  width: 100%;
+
+  ::ng-deep{
+    .cdk-virtual-scroll-content-wrapper {
+      position: inherit;
+    }
+
+    .cdk-virtual-scroll-spacer {
+      height: 0 !important;
+    }
+  }
+}
+
+ion-refresher {
+  position: inherit;
+}
+
+ion-list + ion-content {
+  overflow-y: hidden;
+  height: calc(100% - 108px); // 108 is the height of the sort and order options
+}
+
 ion-list {
-  padding-bottom: 24px;
   padding-left: 16px;
   padding-right: 16px;
 
-  ion-list-header ion-label {
-    margin-top: 8px;
+  ion-list-header {
+    padding-inline-start: 0;
+
+    ion-label {
+      margin-top: 8px;
+    }
   }
 
   ion-item {
@@ -56,18 +90,10 @@ ion-list {
       --padding-start: 0;
       margin-bottom: 24px;
     }
+  }
 
-    &.user-item {
-      --border-radius: 12px;
-      --border-style: solid;
-      --border-width: 1px;
-      --border-color: #79747E;
-      --min-height: 70px;
-
-      &:not(:last-of-type) {
-        margin-bottom: 24px;
-      }
-    }
+  app-user {
+    margin-bottom: 24px;
   }
 }
 
@@ -114,5 +140,11 @@ div.empty {
     font-weight: 700;
     font-size: 1.5rem;
     line-height: 2.25rem;
+  }
+
+  h3 {
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 2.5rem;
   }
 }

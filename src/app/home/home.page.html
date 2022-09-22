@@ -1,90 +1,165 @@
-<ion-header>
+<ion-header collapse="condense">
   <ion-toolbar>
-    <ion-title>
+    <ion-title size="large">
       Welcome!
     </ion-title>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      type="text"
+      debounce="400"
+      [value]="search"
+      enterkeyhint="search"
+      show-clear-button="always"
+      clearIcon="close-circle-outline"
+      placeholder="Search user’s username here..."
+      (ionClear)="onSearchClear()"
+      (ionChange)="onSearchChange($any($event))">
+    </ion-searchbar>
+  </ion-toolbar>
 </ion-header>
-<ion-content [fullscreen]="true">
-  <ion-refresher slot="fixed">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">
-        Welcome!
-      </ion-title>
-    </ion-toolbar>
-    <ion-toolbar>
-      <ion-searchbar
-        type="text"
-        debounce="400"
-        [value]="search"
-        enterkeyhint="search"
-        show-clear-button="always"
-        clearIcon="close-circle-outline"
-        placeholder="Search user’s username here..."
-        (ionChange)="onSearchChange($any($event))">
-      </ion-searchbar>
-    </ion-toolbar>
-  </ion-header>
-
+<ion-content
+  role="feed"
+  [scrollY]="false"
+  [fullscreen]="true">
   <ion-list lines="none">
     <ion-list-header>
       <ion-label>
         List of users
       </ion-label>
     </ion-list-header>
-    <ion-item class="chips-item">
+    <ion-item
+      role="article"
+      class="chips-item">
       <div class="chips">
-        <ion-chip [outline]="true">
+        <ion-chip
+          [outline]="true"
+          id="sort-options">
           <div class="chip-left">
             <ion-icon color="primary" name="filter-outline"></ion-icon>
             <ion-label>
-              Sort by...
+              {{ (sortBy ? sortBy : 'Sort by...') | titlecase }}
             </ion-label>
           </div>
           <ion-icon color="dark" name="chevron-down-outline"></ion-icon>
         </ion-chip>
-        <ion-chip [outline]="true">
+        <ion-chip
+          [outline]="true"
+          id="order-options">
           <div class="chip-left">
             <ion-icon color="primary" [name]="orderBy === 'desc' ? 'trending-down-outline': 'trending-up-outline'"></ion-icon>
             <ion-label>
-              Order by...
+              {{ orderBy === 'desc' ? 'Descending': 'Ascending' }}
             </ion-label>
           </div>
           <ion-icon color="dark" name="chevron-down-outline"></ion-icon>
         </ion-chip>
       </div>
     </ion-item>
-    <ng-container *ngIf="searchResult !== null; else empty;">
-      <ion-item
-        class="user-item"
-        *ngFor="let user of searchResult.items">
-        <ion-avatar slot="start">
-          <img [src]="user.avatarUrl"  alt="User avatar"/>
-        </ion-avatar>
-        <ion-label>
-          <h2>{{ user.login }}</h2>
-        </ion-label>
-        <ion-button
-          slot="end"
-          shape="round"
-          fill="outline"
-          size="default"
-          color="primary">
-          Go to profile
-        </ion-button>
-      </ion-item>
-    </ng-container>
   </ion-list>
 
-  <ng-template #empty>
-    <div class="empty">
-      <img src="/assets/images/search.image.png" alt="Image to show when there are no results"/>
-      <p>
-        Write something to search in GitHub!
-      </p>
-    </div>
-  </ng-template>
+  <ion-content
+    role="feed"
+    [scrollY]="false">
+    <!-- Refresher -->
+    <ion-refresher
+      slot="fixed"
+      (ionRefresh)="onSearchChange({
+        detail: {
+          value: search
+        }
+      })">
+      <ion-refresher-content
+        refreshingSpinner="circles"
+        refreshingText="Refreshing...">
+      </ion-refresher-content>
+    </ion-refresher>
+
+    <!-- Virtual Scroll -->
+    <cdk-virtual-scroll-viewport
+      itemSize="96"
+      minBufferPx="960"
+      class="ion-content-scroll-host"
+      [maxBufferPx]="(itemsPerPage / 3) * 96">
+      <ion-list lines="none">
+        <ng-container *ngIf="searchResult !== null; else empty;">
+          <ng-container *ngIf="searchResult.items.length > 0; else noResults">
+            <app-user
+              [user]="user"
+              *cdkVirtualFor="let user of searchResult.items">
+            </app-user>
+          </ng-container>
+        </ng-container>
+      </ion-list>
+
+      <!-- Infinite Scroll -->
+      <ion-infinite-scroll
+        (ionInfinite)="onScroll()">
+        <ion-infinite-scroll-content
+          loadingSpinner="circles"
+          loadingText="Loading more data...">
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </cdk-virtual-scroll-viewport>
+
+  </ion-content>
 </ion-content>
+
+<ion-popover
+  trigger="sort-options"
+  [dismissOnSelect]="true">
+  <ng-template>
+    <ion-content>
+      <ion-list>
+        <ion-item
+          *ngFor="let sort of sortOptions"
+          (click)="orderOrSortChanged(sort, orderBy)">
+          <ion-label>
+            {{ sort | titlecase }}
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-popover>
+
+<ion-popover
+  trigger="order-options"
+  [dismissOnSelect]="true">
+  <ng-template>
+    <ion-content>
+      <ion-list>
+        <ion-item
+          *ngFor="let order of orderOptions"
+          (click)="orderOrSortChanged(sortBy, order)">
+          <ion-label>
+            {{ order | titlecase }}
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-popover>
+
+<ng-template #empty>
+  <div class="empty">
+    <img src="/assets/images/search.image.png" alt="Image to show when there are no results"/>
+    <p>
+      Write something to search in GitHub!
+    </p>
+  </div>
+</ng-template>
+
+<ng-template #noResults>
+  <div class="empty">
+    <h3>
+      Try again!
+    </h3>
+    <img src="/assets/images/empty.image.png" alt="Image to show when there are no results"/>
+    <p>
+      No results found for this search.
+    </p>
+  </div>
+</ng-template>
+
+
